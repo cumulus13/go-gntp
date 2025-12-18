@@ -17,3 +17,5 @@ __pycache__/
 *.log
 *sublime*
 *.exe*
+# PT backup directory
+.pt/

@@ -133,23 +133,27 @@ client.SendMessage(msg)
 
 ## 🎯 Icon Delivery Modes
 
-### DataURL Mode (Recommended - Default)
-
-```go
-client := gntp.NewClient("App").
-    WithIconMode(gntp.IconModeDataURL)
-```
-
-**Best for:** Windows, Android, universal compatibility
-
-### Binary Mode (GNTP Spec)
+### Binary Mode (Recommended for Windows!)
 
 ```go
 client := gntp.NewClient("App").
     WithIconMode(gntp.IconModeBinary)
 ```
 
-**Best for:** macOS, Linux (not recommended for Windows)
+**Format:** `x-growl-resource://UUID` + binary data
+**Best for:** Windows Growl, macOS, Linux (MOST RELIABLE!)
+**✅ Tested and working on Windows Growl**
+
+### DataURL Mode
+
+```go
+client := gntp.NewClient("App").
+    WithIconMode(gntp.IconModeDataURL)
+```
+
+**Format:** `data:image/png;base64,iVBORw0KGgo...`
+**Best for:** Android, when you can't use binary
+**⚠️ May have issues with large icons on Windows**
 
 ### File URL Mode
 
@@ -158,7 +162,9 @@ client := gntp.NewClient("App").
     WithIconMode(gntp.IconModeFileURL)
 ```
 
+**Format:** `file:///C:/full/path/to/icon.png`
 **Best for:** Shared icons on disk
+**⚠️ Requires absolute path, file must be accessible to Growl**
 
 ### HTTP URL Mode
 
@@ -167,7 +173,8 @@ client := gntp.NewClient("App").
     WithIconMode(gntp.IconModeHttpURL)
 ```
 
-**Best for:** Remote servers, web-hosted icons
+**Format:** `http://example.com/icon.png`
+**Best for:** Web-hosted icons, remote servers
 
 ## 🔔 Callback Events
 
@@ -233,12 +240,17 @@ opts.WithCallbackTarget("https://example.com")      // URL to open
 
 ## 🌍 Platform Compatibility
 
-| Platform | Binary Mode | DataURL Mode | Callbacks | Recommended |
-|----------|-------------|--------------|-----------|-------------|
-| Windows (Growl for Windows) | ⚠️ Buggy | ✅ Works | ✅ Works | DataURL |
-| macOS (Growl) | ✅ Works | ✅ Works | ✅ Works | Binary |
-| Linux (Growl-compatible) | ✅ Works | ✅ Works | ✅ Works | Binary |
-| Android (Growl for Android) | ⚠️ Issues | ✅ Works | ✅ Works | DataURL |
+| Platform | Binary Mode | DataURL Mode | FileURL Mode | Callbacks | Recommended |
+|----------|-------------|--------------|--------------|-------------|
+| **Windows (Growl for Windows)** | ✅ **Works!** | ⚠️ Issues | ⚠️ Issues | ✅ Works | **Binary** |
+| **macOS (Growl)** | ✅ Works | ✅ Works | ✅ Works | ✅ Works | Binary |
+| **Linux (Growl-compatible)** | ✅ Works | ✅ Works | ✅ Works ✅ Works | | Binary |
+| **Android (Growl for Android)** | ✅ Works | ✅ Works | ⚠️ Issues ✅ Works | | Binary or DataURL |
+
+**Testing Results:**
+- ✅ **Binary Mode**: Confirmed working on Windows Growl for Windows
+- ⚠️ **DataURL Mode**: May fail with large icons (base64 size limit)
+- ⚠️ **FileURL Mode**: Requires absolute path, may have permission issues
 
 ## 📚 Examples
 

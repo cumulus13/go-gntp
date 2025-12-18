@@ -11,10 +11,10 @@
 package gntp
 
 import (
-	"crypto/md5"
+	// "crypto/md5"
 	"encoding/base64"
 	"fmt"
-	"io"
+	// "io"
 	"net"
 	"os"
 	"path/filepath"
@@ -324,45 +324,61 @@ func guessMimeType(path string) string {
 	}
 }
 
+// GetReference returns the icon reference string based on mode (PUBLIC - UPPERCASE!)
+func (r *Resource) GetReference(mode IconMode) string {
+	return r.getReference(mode)
+}
+
+// ToDataURL converts to base64 data URL (PUBLIC)
+func (r *Resource) ToDataURL() string {
+	return r.toDataURL()
+}
+
 // getReference returns the icon reference string based on mode
 func (r *Resource) getReference(mode IconMode) string {
 	switch mode {
 	case IconModeBinary:
 		return fmt.Sprintf("x-growl-resource://%s", r.Identifier)
+		
 	case IconModeFileURL:
 		if r.SourcePath != "" {
-			path := strings.ReplaceAll(r.SourcePath, "\\", "/")
+			// Convert to absolute path and use file:// format
+			absPath := r.SourcePath
+			if !filepath.IsAbs(absPath) {
+				if abs, err := filepath.Abs(absPath); err == nil {
+					absPath = abs
+				}
+			}
+			// Windows: C:\path\to\file -> file:///C:/path/to/file
+			// Unix: /path/to/file -> file:///path/to/file
+			path := strings.ReplaceAll(absPath, "\\", "/")
 			return fmt.Sprintf("file:///%s", path)
 		}
+		// Fallback to data URL if no file path
 		return r.toDataURL()
+		
 	case IconModeHttpURL:
-		if r.SourcePath != "" {
-			return r.SourcePath // Assume it's already a URL
+		if r.SourcePath != "" && (strings.HasPrefix(r.SourcePath, "http://") || strings.HasPrefix(r.SourcePath, "https://")) {
+			return r.SourcePath // Already a URL
 		}
 		return r.toDataURL()
+		
 	default: // IconModeDataURL, IconModeAuto
 		return r.toDataURL()
 	}
 }
 
 // toDataURL converts resource to base64 data URL
+// CRITICAL: Growl for Windows is VERY STRICT about base64 format!
 func (r *Resource) toDataURL() string {
+	// Use standard base64 encoding WITHOUT line breaks
+	// Growl for Windows doesn't like MIME-style line breaks in data URLs
 	encoded := base64.StdEncoding.EncodeToString(r.Data)
 	
-	// Add line breaks every 76 characters (MIME standard)
-	var formatted strings.Builder
-	for i := 0; i < len(encoded); i += 76 {
-		end := i + 76
-		if end > len(encoded) {
-			end = len(encoded)
-		}
-		formatted.WriteString(encoded[i:end])
-		if end < len(encoded) {
-			formatted.WriteString(CRLF)
-		}
-	}
+	// Don't add line breaks for data URLs - they cause issues!
+	// The MIME line break format is only for binary resources
 	
-	return fmt.Sprintf("data:%s;base64,%s", r.MimeType, formatted.String())
+	return fmt.Sprintf("data:%s;base64,%s", r.MimeType, encoded)
 }
 
 // NewNotificationType creates a new notification type

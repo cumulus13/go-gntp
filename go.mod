@@ -1,4 +1,4 @@
-module go-gntp
+module github.com/cumulus13/go-gntp
 
 go 1.25.3
 

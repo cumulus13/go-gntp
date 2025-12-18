@@ -5,6 +5,9 @@ import (
 	"fmt"
 	"net"
 	"strings"
+	"crypto/md5"
+	"time"
+	"io"
 )
 
 // Register registers the application and notification types with Growl
