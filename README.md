@@ -241,11 +241,11 @@ opts.WithCallbackTarget("https://example.com")      // URL to open
 ## 🌍 Platform Compatibility
 
 | Platform | Binary Mode | DataURL Mode | FileURL Mode | Callbacks | Recommended |
-|----------|-------------|--------------|--------------|-------------|
+|----------|-------------|--------------|--------------|-----------|-------------|
 | **Windows (Growl for Windows)** | ✅ **Works!** | ⚠️ Issues | ⚠️ Issues | ✅ Works | **Binary** |
 | **macOS (Growl)** | ✅ Works | ✅ Works | ✅ Works | ✅ Works | Binary |
-| **Linux (Growl-compatible)** | ✅ Works | ✅ Works | ✅ Works ✅ Works | | Binary |
-| **Android (Growl for Android)** | ✅ Works | ✅ Works | ⚠️ Issues ✅ Works | | Binary or DataURL |
+| **Linux (Growl-compatible)** | ✅ Works | ✅ Works | ✅ Works | ✅ Works | Binary |
+| **Android (Growl for Android)** | ✅ Works | ✅ Works | ⚠️ Issues | ✅ Works | **Binary or DataURL** |
 
 **Testing Results:**
 - ✅ **Binary Mode**: Confirmed working on Windows Growl for Windows
