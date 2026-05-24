@@ -1,0 +1,81 @@
+name: Go CI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / Go ${{ matrix.go }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os:
+          - ubuntu-latest
+          - windows-latest
+          - macos-latest
+
+        go:
+          - '1.16'
+          - '1.17'
+          - '1.18'
+          - '1.19'
+          - '1.20'
+          - '1.21'
+          - '1.22'
+          - '1.23'
+          - '1.24'
+          - '1.25'
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: ${{ matrix.go }}
+          check-latest: false
+          cache: true
+          cache-dependency-path: |
+            go.sum
+
+      - name: Show Go version
+        run: go version
+
+      - name: Verify go.mod
+        run: go mod verify
+
+      - name: Download dependencies
+        run: go mod download
+
+      - name: Tidy check
+        shell: bash
+        run: |
+          go mod tidy
+          git diff --exit-code
+
+      - name: Build library
+        run: go build -v ./...
+
+      - name: Run tests
+        run: go test -v ./...
+
+      - name: Build examples
+        shell: bash
+        run: |
+          for dir in examples/*; do
+            if [ -d "$dir" ]; then
+              echo "Building $dir"
+              go build -v "./$dir"
+            fi
+          done

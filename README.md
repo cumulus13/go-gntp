@@ -2,7 +2,9 @@
 
 [![Go Reference](https://pkg.go.dev/badge/github.com/cumulus13/go-gntp.svg)](https://pkg.go.dev/github.com/cumulus13/go-gntp)
 [![Go Report Card](https://goreportcard.com/badge/github.com/cumulus13/go-gntp)](https://goreportcard.com/report/github.com/cumulus13/go-gntp)
+[![Go CI](https://github.com/cumulus13/go-gntp/actions/workflows/go.yml/badge.svg)](https://github.com/cumulus13/go-gntp/actions/workflows/go.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/cumulus13/go-gntp)](https://github.com/cumulus13/go-gntp/blob/master/go.mod)
 
 GNTP (Growl Notification Transport Protocol) client for Go with **full callback support**, Windows/Linux/Mac/Android compatibility, and multiple icon delivery modes.
 
